@@ -6,9 +6,13 @@ import { Text } from 'src/ui/text';
 
 import styles from './Article.module.scss';
 
-export const Article = () => {
+// Типизация для пропсов компонента Article
+type PropsArticle = {
+	onClick?: () => void;
+};
+export const Article = (props: PropsArticle) => {
 	return (
-		<article className={clsx(styles.article)}>
+		<article onClick={props.onClick} className={clsx(styles.article)}>
 			<Text as='h1' size={45} weight={800} uppercase dynamicLite>
 				Портрет Западной Швейцарии
 			</Text>
@@ -43,7 +47,7 @@ export const Article = () => {
 				коммерческих полёта в сутки. Его можно видеть в &quot;Домодедово&quot;,
 				а также в аэропортах Парижа, Валенсии, Кракова, Берлина, Вены, Загреба,
 				на на Майорке, Крите и Сицилии. Самолёт останется в той же ливрее, пока
-				его купит другая авиакомпания.
+				его не купит другая авиакомпания.
 			</Text>
 		</article>
 	);
