@@ -1,3 +1,4 @@
+// Импорт необходимых компонентов и стилей
 import { createRoot } from 'react-dom/client';
 import { StrictMode, CSSProperties, useState } from 'react';
 import clsx from 'clsx';
@@ -5,36 +6,26 @@ import clsx from 'clsx';
 import { Article } from './components/article/Article';
 import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
 import {
-	defaultArticleState, // Начальное состояние параметров статьи
-	ArticleStateType, // Тип данных для параметров статьи
-} from './constants/articleProps'; // Импорт настроек и типов
+	defaultArticleState,
+	ArticleStateType,
+} from './constants/articleProps';
 
-import './styles/index.scss'; // Общие стили приложения
-import styles from './styles/index.module.scss'; // Модульные стили для компонента App
+import './styles/index.scss';
+import styles from './styles/index.module.scss';
 
-// Находим элемент с id 'root' в HTML-документе, в который будем рендерить React-приложение
 const domNode = document.getElementById('root') as HTMLDivElement;
-// Создаем корневой React-компонент, который будет управлять приложением
 const root = createRoot(domNode);
 
-// Главный компонент приложения
 const App = () => {
-	// Используем хук useState для управления состоянием формы с настройками статьи
-	const [formState, setFormState] = useState(defaultArticleState); // Состояние для параметров статьи
-	const [formOpen, setFormOpen] = useState(false); // Состояние для управления видимостью формы (открыта или закрыта)
+	const [formState, setFormState] = useState(defaultArticleState);
+	const [formOpen, setFormOpen] = useState(false);
 
-	// Функция для переключения видимости формы (открыть/закрыть)
 	const toggler = () => setFormOpen(!formOpen);
 
-	// Функция, вызываемая при отправке формы (нажатие на "Применить")
-	// Обновляет состояние параметров статьи на основе переданных данных
 	const cbSubmit = (props: ArticleStateType) => setFormState(props);
 
-	// Функция, вызываемая при сбросе формы (нажатие на "Сбросить")
-	// Устанавливает параметры статьи обратно к значениям по умолчанию
 	const cbReset = (props: ArticleStateType) => setFormState(props);
 
-	// Возвращаем JSX разметку компонента
 	return (
 		<div
 			className={clsx(styles.main)}
@@ -47,21 +38,17 @@ const App = () => {
 					'--container-width': formState.contentWidth.value,
 				} as CSSProperties
 			}>
-			{/* Компонент формы для изменения параметров статьи */}
 			<ArticleParamsForm
-				onSubmit={cbSubmit} // Отправляю форму
-				onReset={cbReset} // Сбрасываю форму
-				onToggle={toggler} // Переключаю видимость формы
-				formOpen={formOpen} // Передаю текущее состояние видимости формы
+				onSubmit={cbSubmit}
+				onReset={cbReset}
+				onToggle={toggler}
+				formOpen={formOpen}
 			/>
-			{/* Компонент самой статьи */}
-			<Article onClick={() => setFormOpen(false)} />{' '}
-			{/* Закрывает форму при клике по статье */}
+			<Article />
 		</div>
 	);
 };
 
-// Рендерим компонент App в корневом элементе DOM с использованием StrictMode
 root.render(
 	<StrictMode>
 		<App />
