@@ -23,26 +23,35 @@ import { RadioGroup } from '../radio-group';
 import { useClose } from 'src/hooks/useClose'; // Импорт кастомного хука для закрытия формы
 
 type PropsArticleParamsForm = {
-	onSubmit?: (params: ArticleStateType) => void;
-	onReset?: (params: ArticleStateType) => void;
-	formOpen: boolean;
-	onToggle?: (isOpen: boolean) => void;
+	onSubmit: (params: ArticleStateType) => void;
 };
 
-export const ArticleParamsForm = (props: PropsArticleParamsForm) => {
-	const { onSubmit, onReset, onToggle, formOpen } = props;
+export const ArticleParamsForm = ({ onSubmit }: PropsArticleParamsForm) => {
 	const [params, setParams] = useState<ArticleStateType>(defaultArticleState);
+	const [formOpen, setFormOpen] = useState(false); // Управление открытием формы
 	const formRef = useRef<HTMLFormElement>(null);
 
 	useClose({
 		isOpen: formOpen,
-		onClose: () => onToggle?.(false), // Закрываем форму при использовании хука
+		onClose: () => setFormOpen(false), // Закрываем форму при клике вне или по ESC
 		rootRef: formRef,
 	});
 
 	// Функция для переключения состояния формы (открыта/закрыта)
 	const toggleForm = () => {
-		onToggle?.(!formOpen); // Переключаем статус открытия формы
+		setFormOpen(!formOpen);
+	};
+
+	// Обработчик отправки формы
+	const submitParams = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		onSubmit(params); // Отправляем параметры в родительский компонент
+	};
+
+	// Обработчик сброса стилей
+	const resetStyles = () => {
+		setParams(defaultArticleState);
+		onSubmit(defaultArticleState); // Сбрасываем стили в родительском компоненте
 	};
 
 	// Функции для изменения различных параметров состояния
@@ -63,19 +72,7 @@ export const ArticleParamsForm = (props: PropsArticleParamsForm) => {
 	};
 
 	const handleContentWidthChange = (option: OptionType) => {
-		setParams((prev) => ({ ...prev, contentWidth: option })); // Ширина контента
-	};
-
-	// Обработчик отправки формы
-	const submitParams = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		onSubmit?.(params);
-	};
-
-	// Обработчик сброса стилей
-	const resetStyles = () => {
-		setParams(defaultArticleState); // Сбрасываем состояние к значениям по умолчанию
-		onReset?.(defaultArticleState); // Вызываем функцию onReset с состоянием по умолчанию
+		setParams((prev) => ({ ...prev, contentWidth: option }));
 	};
 
 	// Определяем классы для бокового меню
@@ -89,7 +86,6 @@ export const ArticleParamsForm = (props: PropsArticleParamsForm) => {
 		<>
 			<ArrowButton isOpen={formOpen} onClick={toggleForm} />
 			<aside className={sidebarStyle}>
-				{' '}
 				{/* Боковая панель с формой */}
 				<form
 					ref={formRef}
